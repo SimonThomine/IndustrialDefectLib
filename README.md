@@ -6,7 +6,7 @@
 This library aims to give a simple access to the proposed defect generation approaches for industrial defects. 
 
 ## Access to demo 
-A demo is available in HuggingFace : LINK
+A demo is available in HuggingFace : [Link](https://huggingface.co/spaces/SimTho/IndustrialDefects)
 
 ## Base usage 
 The library is designed to be straightforward to use with a single function that generate one or several defects and masks
@@ -64,7 +64,7 @@ Code inspiration : https://github.com/TooTouch/MemSeg
 
 ## CSE
 Article : https://arxiv.org/pdf/2403.01859.pdf  
-Code inspiration : TODO
+Code inspiration : https://github.com/SimonThomine/CSE
 <p align="left">
   <img width="700" height="254" src="images/Blurred.png">
 </p>
