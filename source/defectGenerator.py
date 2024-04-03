@@ -8,6 +8,7 @@ import glob
 from source.perlin import rand_perlin_2d_np
 import matplotlib.pyplot as plt
 from source.nsa import backGroundMask,patch_ex
+from source.cutpaste import CutPaste
 
 class TexturalAnomalyGenerator():
     def __init__(self, resize_shape=None,dtd_path="../../datasets/dtd/images"):
@@ -99,6 +100,7 @@ class DefectGenerator():
 
         self.texturalAnomalyGenerator=TexturalAnomalyGenerator(resize_shape,dtd_path)
         self.structuralAnomalyGenerator=StructuralAnomalyGenerator(resize_shape)
+        self.cutpaste=CutPaste()
         
         self.resize_shape=resize_shape
         self.rot = iaa.Sequential([iaa.Affine(rotate=(-90, 90))])
@@ -165,11 +167,21 @@ class DefectGenerator():
         msk = transform(msk)*255.0
         return image,msk
     
+    def generateCutPasteDefect(self, image,bMask):
+        msk=np.zeros((self.resize_shape[0], self.resize_shape[1]))
+        while (np.count_nonzero(msk)<100):
+            defect,cpmsk=self.cutpaste.cutpaste(image)
+            msk=bMask*np.expand_dims(np.array(cpmsk),axis=2)
+        image=np.array(defect)*bMask + np.array(image)*(1-bMask)
+        transform=T.ToTensor()
+        image = transform(image)
+        msk = transform(msk)
+        return image,msk
     
     
     def genSingleDefect(self,image,label,mskbg):
-        if label.lower() not in ["textural","structural","blurred","nsa"]:
-            raise ValueError("The defect type should be in ['textural','structural','blurred','nsa']")
+        if label.lower() not in ["textural","structural","blurred","nsa","cutpaste"]:
+            raise ValueError("The defect type should be in ['textural','structural','blurred','nsa','cutpaste']")
          
         if (label.lower()=="textural" or label.lower()=="structural" or label.lower()=="blurred"):
             imageT=self.toTensor(image)
@@ -182,6 +194,9 @@ class DefectGenerator():
                 return self.generateBlurredDefectiveImage(imageT,bmask)
         elif (label.lower()=="nsa"):
             return self.generateNsaDefect(image,mskbg) 
+        elif (label.lower()=="cutpaste"):
+            return self.generateCutPasteDefect(image,mskbg)
+
 
     def genDefect(self,image,defectType,category="",return_list=False):
         mskbg=backGroundMask(image,obj=category) 

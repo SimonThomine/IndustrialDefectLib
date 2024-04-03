@@ -46,7 +46,7 @@ with gr.Blocks(css="style.css") as demo:
     with gr.Group():
         with gr.Row():
             category_input = gr.Dropdown(label="Select object", choices=list(images.keys()),value="Bottle")
-            defect_type_input = gr.Dropdown(label="Select type of defect", choices=["blurred", "nsa","structural", "textural" ],value="nsa")
+            defect_type_input = gr.Dropdown(label="Select type of defect", choices=["blurred", "nsa","structural", "textural","cutpaste" ],value="nsa")
             submit = gr.Button(
                 scale=1,
                 variant='primary'
