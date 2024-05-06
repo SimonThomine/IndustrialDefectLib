@@ -101,6 +101,7 @@ class DefectGenerator():
         self.texturalAnomalyGenerator=TexturalAnomalyGenerator(resize_shape,dtd_path)
         self.structuralAnomalyGenerator=StructuralAnomalyGenerator(resize_shape)
         self.cutpaste=CutPaste()
+        self.cutpaste3way=CutPaste(type="3way")
         
         self.resize_shape=resize_shape
         self.rot = iaa.Sequential([iaa.Affine(rotate=(-90, 90))])
@@ -167,10 +168,13 @@ class DefectGenerator():
         msk = transform(msk)*255.0
         return image,msk
     
-    def generateCutPasteDefect(self, image,bMask):
+    def generateCutPasteDefect(self, image,bMask,scar=False):
         msk=np.zeros((self.resize_shape[0], self.resize_shape[1]))
         while (np.count_nonzero(msk)<100):
-            defect,cpmsk=self.cutpaste.cutpaste(image)
+            if not scar:
+                defect,cpmsk=self.cutpaste.cutpaste(image)
+            else:
+                defect,cpmsk=self.cutpaste3way.cutpaste_scar(image)
             msk=bMask*np.expand_dims(np.array(cpmsk),axis=2)
         image=np.array(defect)*bMask + np.array(image)*(1-bMask)
         transform=T.ToTensor()
@@ -180,8 +184,8 @@ class DefectGenerator():
     
     
     def genSingleDefect(self,image,label,mskbg):
-        if label.lower() not in ["textural","structural","blurred","nsa","cutpaste"]:
-            raise ValueError("The defect type should be in ['textural','structural','blurred','nsa','cutpaste']")
+        if label.lower() not in ["textural","structural","blurred","nsa","cutpaste","cutpastescar"]:
+            raise ValueError("The defect type should be in ['textural','structural','blurred','nsa','cutpaste','cutpasteScar']")
          
         if (label.lower()=="textural" or label.lower()=="structural" or label.lower()=="blurred"):
             imageT=self.toTensor(image)
@@ -195,7 +199,9 @@ class DefectGenerator():
         elif (label.lower()=="nsa"):
             return self.generateNsaDefect(image,mskbg) 
         elif (label.lower()=="cutpaste"):
-            return self.generateCutPasteDefect(image,mskbg)
+            return self.generateCutPasteDefect(image,mskbg,scar=False)
+        elif (label.lower()=="cutpastescar"):
+            return self.generateCutPasteDefect(image,mskbg,scar=True)
 
 
     def genDefect(self,image,defectType,category="",return_list=False):

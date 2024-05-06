@@ -20,7 +20,7 @@ defect,msk=defGen.genDefect(image,defectType=["nsa"])
 ### Arguments
 
 - `image` `(Pil Image)` : The input image 
-- `defectType` `(List[str])` : A list of string containing the defect types, candidates are "nsa", "structural", "textural", "blurred", "cutpaste"
+- `defectType` `(List[str])` : A list of string containing the defect types, candidates are "nsa", "structural", "textural", "blurred", "cutpaste", "cutpasteScar"
 - `category` `(str, default="")` : The object category to mask the background if necessary 
 - `return_list` `(bool, default=False)` : To generate the output as a list of defective image and masks instead of a single defective image and mask
 

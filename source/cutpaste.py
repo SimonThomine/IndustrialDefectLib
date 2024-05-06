@@ -106,9 +106,9 @@ class CutPaste(object):
         '''
         if self.type == 'binary':
             aug = random.choice([self.cutpaste, self.cutpaste_scar])
-            return image, aug(image)
+            return aug(image)
 
         elif self.type == '3way':
             cutpaste = self.cutpaste(image)
             scar = self.cutpaste_scar(image)
-            return image, cutpaste, scar
+            return cutpaste, scar
