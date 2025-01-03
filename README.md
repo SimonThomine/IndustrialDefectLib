@@ -75,3 +75,7 @@ Code inspiration : https://github.com/LilitYolyan/CutPaste
 <p align="left">
   <img width="700" height="254" src="images/Cutpaste.png">
 </p>
+
+## License
+
+This project is licensed under the MIT License.
